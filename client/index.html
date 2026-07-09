@@ -80,6 +80,10 @@
           <div class="form-group">
             <label class="form-label" for="loginPassword">Password</label>
             <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+            <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary);">
+              <input type="checkbox" id="toggleLoginPassword" onclick="togglePasswordVisibility('loginPassword')">
+              <label for="toggleLoginPassword" style="cursor: pointer; user-select: none;">Show Password</label>
+            </div>
           </div>
           <a href="#" class="forgot-link" onclick="switchTab('forgot')">Forgot Password?</a>
           <button type="submit" class="btn btn-primary" style="width: 100%;">
@@ -118,6 +122,10 @@
           <div class="form-group">
             <label class="form-label" for="registerPassword">Password</label>
             <input type="password" id="registerPassword" class="form-control" placeholder="at least 6 characters" required minlength="6">
+            <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary);">
+              <input type="checkbox" id="toggleRegisterPassword" onclick="togglePasswordVisibility('registerPassword')">
+              <label for="toggleRegisterPassword" style="cursor: pointer; user-select: none;">Show Password</label>
+            </div>
           </div>
           <div class="form-group">
             <label class="form-label" for="registerRole">Role</label>
@@ -154,6 +162,16 @@
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script>
+    // Toggle Password Visibility
+    function togglePasswordVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      if (field.type === 'password') {
+        field.type = 'text';
+      } else {
+        field.type = 'password';
+      }
+    }
+
     // Tab controller
     function switchTab(tab) {
       const sections = ['login', 'register', 'forgot'];
