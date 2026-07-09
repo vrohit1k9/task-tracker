@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskQuest - Profile & Settings</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) {
+      .profile-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .check-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .check-group input {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Gradients -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <header>
+    <div class="container flex-between">
+      <div class="nav-brand">
+        <span>✨</span> TaskQuest
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+          <li><a href="tasks.html" class="nav-link">Task Board</a></li>
+          <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin Panel</a></li>
+          <li><a href="profile.html" class="nav-link active">Profile</a></li>
+          <li><button class="theme-switch" onclick="toggleTheme()">🌓</button></li>
+          <li><button class="btn btn-secondary" onclick="auth.logout()">Logout</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="panel-header" style="margin-bottom: 30px;">
+      <h1>Profile & Settings</h1>
+      <p style="color: var(--text-secondary);">Manage your security, configuration preferences, and see audit history.</p>
+    </div>
+
+    <div class="profile-layout">
+      
+      <!-- Preferences Card -->
+      <div class="glass-card">
+        <h3>User Information</h3>
+        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+          <div><strong>Username:</strong> <span id="infoUsername">student</span></div>
+          <div><strong>Email:</strong> <span id="infoEmail">student@school.edu</span></div>
+          <div><strong>Role:</strong> <span id="infoRole" class="tag tag-category">student</span></div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 20px;">
+
+        <h3>System Preferences</h3>
+        <form id="preferencesForm" style="margin-top: 15px;">
+          <div class="form-group">
+            <label class="form-label" for="prefTheme">Theme Mode</label>
+            <select id="prefTheme" class="form-control">
+              <option value="light">Light Mode</option>
+              <option value="dark">Dark Mode</option>
+            </select>
+          </div>
+          <div class="check-group">
+            <input type="checkbox" id="prefEmail">
+            <label for="prefEmail" style="font-weight: 500;">Enable Email Notifications (Mock)</label>
+          </div>
+          <div class="check-group" style="margin-bottom: 24px;">
+            <input type="checkbox" id="prefBrowser">
+            <label for="prefBrowser" style="font-weight: 500;">Enable Browser Push Notifications</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Preferences</button>
+        </form>
+      </div>
+
+      <!-- Security / Change Password Card -->
+      <div class="glass-card">
+        <h3>Change Password</h3>
+        <form id="changePasswordForm" style="margin-top: 15px;">
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" class="form-control" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newPassword">New Password</label>
+            <input type="password" id="newPassword" class="form-control" placeholder="at least 6 characters" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+            <input type="password" id="confirmNewPassword" class="form-control" placeholder="••••••••" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Update Password</button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Personal Audit / Activity Logs -->
+    <div class="glass-card" style="margin-top: 30px;">
+      <h3>Your Activity History & Login Logs</h3>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Historical audit trail for security validations.</p>
+      
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Action Event</th>
+              <th>IP Address</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="auditLogsBody">
+            <!-- Loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (auth.isAdmin()) {
+        document.getElementById('adminNavLink').style.display = 'block';
+      }
+
+      loadProfile();
+      loadAuditLogs();
+
+      document.getElementById('preferencesForm').addEventListener('submit', handlePreferencesSubmit);
+      document.getElementById('changePasswordForm').addEventListener('submit', handleChangePasswordSubmit);
+    });
+
+    async function loadProfile() {
+      try {
+        const res = await api.get('/auth/profile');
+        const { user } = res.data;
+
+        document.getElementById('infoUsername').textContent = user.username;
+        document.getElementById('infoEmail').textContent = user.email;
+        document.getElementById('infoRole').textContent = user.role.toUpperCase();
+
+        // Populate preference inputs
+        const prefs = user.preferences || {};
+        document.getElementById('prefTheme').value = prefs.theme || 'light';
+        document.getElementById('prefEmail').checked = prefs.emailNotifications !== false;
+        document.getElementById('prefBrowser').checked = prefs.browserNotifications !== false;
+
+      } catch (err) {
+        showToast('Failed to load profile parameters', 'error');
+      }
+    }
+
+    async function loadAuditLogs() {
+      try {
+        const res = await api.get('/audit/my-logs?limit=15');
+        const tbody = document.getElementById('auditLogsBody');
+
+        if (res.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No activity recorded.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = res.data.map(log => {
+          const time = new Date(log.timestamp).toLocaleString();
+          return `
+            <tr>
+              <td style="font-size: 0.85rem; white-space: nowrap;">${time}</td>
+              <td><span class="tag" style="background: rgba(99, 102, 241, 0.1); color: var(--accent-primary);">${log.action}</span></td>
+              <td style="font-size: 0.85rem; font-family: monospace;">${log.ipAddress}</td>
+              <td style="font-size: 0.85rem; color: var(--text-secondary); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title='${JSON.stringify(log.details)}'>
+                ${JSON.stringify(log.details)}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        showToast('Failed to load audit logs', 'error');
+      }
+    }
+
+    async function handlePreferencesSubmit(e) {
+      e.preventDefault();
+      const theme = document.getElementById('prefTheme').value;
+      const emailNotifications = document.getElementById('prefEmail').checked;
+      const browserNotifications = document.getElementById('prefBrowser').checked;
+
+      try {
+        await api.put('/auth/preferences', { theme, emailNotifications, browserNotifications });
+        
+        // Sync local client styling representation immediately
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+
+        showToast('Preferences updated successfully', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function handleChangePasswordSubmit(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword !== confirmNewPassword) {
+        showToast('New passwords do not match', 'error');
+        return;
+      }
+
+      try {
+        await api.post('/auth/change-password', { currentPassword, newPassword });
+        showToast('Password updated successfully', 'success');
+        document.getElementById('changePasswordForm').reset();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

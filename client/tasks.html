@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskQuest - Manage Tasks</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tasks-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) {
+      .tasks-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .category-badge.active {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+    }
+    .category-color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .bulk-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      background: rgba(99, 102, 241, 0.05);
+      border: 1px dashed var(--accent-primary);
+      padding: 12px;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 20px;
+      display: none; /* hidden until item is checked */
+    }
+    .pagination-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .task-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .category-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: var(--border-radius-sm);
+      background: var(--bg-secondary);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Blobs -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <header>
+    <div class="container flex-between">
+      <div class="nav-brand">
+        <span>✨</span> TaskQuest
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+          <li><a href="tasks.html" class="nav-link active">Task Board</a></li>
+          <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin Panel</a></li>
+          <li><a href="profile.html" class="nav-link">Profile</a></li>
+          <li><button class="theme-switch" onclick="toggleTheme()">🌓</button></li>
+          <li><button class="btn btn-secondary" onclick="auth.logout()">Logout</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 40px; padding-bottom: 40px;">
+    
+    <div class="tasks-layout">
+      
+      <!-- Category Management Sidebar -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="glass-card">
+          <div class="flex-between" style="margin-bottom: 15px;">
+            <h3>Categories</h3>
+            <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="openCategoryModal()">+ Add</button>
+          </div>
+          <div id="categorySidebarList">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3>Reminders</h3>
+          <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 12px;">Active task alerts</p>
+          <div id="reminderSidebarList">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks List Panel -->
+      <div>
+        <div class="flex-between" style="margin-bottom: 24px;">
+          <h2>Tasks & Assignments</h2>
+          <button class="btn btn-primary" onclick="openTaskModal()">+ Create New Task</button>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="glass-card filter-bar">
+          <input type="text" id="filterSearch" class="form-control" placeholder="Search tasks..." style="flex: 2; min-width: 200px;">
+          <select id="filterStatus" class="form-control" style="flex: 1; min-width: 120px;">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <select id="filterPriority" class="form-control" style="flex: 1; min-width: 120px;">
+            <option value="">All Priorities</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <select id="filterCategory" class="form-control" style="flex: 1; min-width: 120px;">
+            <option value="">All Categories</option>
+            <!-- Loaded dynamically -->
+          </select>
+          <select id="sortBy" class="form-control" style="flex: 1; min-width: 120px;">
+            <option value="dueDate">Sort by Due Date</option>
+            <option value="priority">Sort by Priority</option>
+            <option value="createdAt">Sort by Date Created</option>
+          </select>
+          <select id="sortOrder" class="form-control" style="flex: 0.5; min-width: 80px;">
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </select>
+        </div>
+
+        <!-- Bulk Operations Bar -->
+        <div id="bulkBar" class="bulk-bar">
+          <span style="font-weight: 600; font-size: 0.9rem;" id="bulkCountText">0 items selected</span>
+          <select id="bulkStatus" class="form-control" style="width: auto;">
+            <option value="">Change Status</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <select id="bulkPriority" class="form-control" style="width: auto;">
+            <option value="">Change Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button class="btn btn-primary" onclick="applyBulkUpdate()" style="padding: 8px 12px; font-size: 0.85rem;">Apply</button>
+          <button class="btn btn-danger" onclick="applyBulkDelete()" style="padding: 8px 12px; font-size: 0.85rem;">Delete Selected</button>
+          <button class="btn btn-secondary" onclick="clearBulkSelections()" style="padding: 8px 12px; font-size: 0.85rem;">Cancel</button>
+        </div>
+
+        <!-- Task List Area -->
+        <div id="tasksList">
+          <!-- Loaded dynamically -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-bar">
+          <button id="btnPrevPage" class="btn btn-secondary" onclick="changePage(-1)">Previous</button>
+          <span id="pageIndicator" style="font-weight: 500;">Page 1 of 1</span>
+          <button id="btnNextPage" class="btn btn-secondary" onclick="changePage(1)">Next</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Create/Edit Task Modal -->
+  <div id="taskModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3 id="taskModalTitle">Create Task</h3>
+      <form id="taskForm" style="margin-top: 15px;">
+        <input type="hidden" id="taskIdField">
+        <div class="form-group">
+          <label class="form-label" for="taskTitle">Task Name</label>
+          <input type="text" id="taskTitle" class="form-control" required maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="taskDesc">Description</label>
+          <textarea id="taskDesc" class="form-control" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="taskCategory">Category</label>
+          <select id="taskCategory" class="form-control" required>
+            <!-- Loaded dynamically -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="taskDueDate">Due Date & Time</label>
+          <input type="datetime-local" id="taskDueDate" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="taskPriority">Priority</label>
+          <select id="taskPriority" class="form-control">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="form-group" id="taskStatusGroup" style="display: none;">
+          <label class="form-label" for="taskStatus">Status</label>
+          <select id="taskStatus" class="form-control">
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="flex-between" style="margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div id="categoryModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Create Category</h3>
+      <form id="categoryForm" style="margin-top: 15px;">
+        <div class="form-group">
+          <label class="form-label" for="catName">Category Name</label>
+          <input type="text" id="catName" class="form-control" required maxlength="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="catColor">Label Color</label>
+          <input type="color" id="catColor" class="form-control" value="#6366f1" style="height: 48px; padding: 4px;">
+        </div>
+        <div class="flex-between" style="margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reminder Modal -->
+  <div id="reminderModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Schedule Reminder Alert</h3>
+      <form id="reminderForm" style="margin-top: 15px;">
+        <input type="hidden" id="reminderTaskId">
+        <div class="form-group">
+          <label class="form-label" for="remindTime">Notify Me At</label>
+          <input type="datetime-local" id="remindTime" class="form-control" required>
+        </div>
+        <div class="flex-between" style="margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeReminderModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Schedule Alert</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/tasks.js"></script>
+</body>
+</html>

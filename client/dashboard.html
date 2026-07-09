@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskQuest - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .panel-widget {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .deadline-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: var(--border-radius-sm);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 10px;
+      transition: var(--transition-smooth);
+    }
+    .deadline-item:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    [data-theme="dark"] .deadline-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .notif-item {
+      padding: 10px 12px;
+      border-radius: var(--border-radius-sm);
+      margin-bottom: 8px;
+      background: var(--bg-secondary);
+      font-size: 0.9rem;
+      border-left: 3px solid var(--accent-primary);
+    }
+    .notif-item.read {
+      border-left-color: var(--border-color);
+      opacity: 0.7;
+    }
+    .chart-box {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Gradients -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <header>
+    <div class="container flex-between">
+      <div class="nav-brand">
+        <span>✨</span> TaskQuest
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+          <li><a href="tasks.html" class="nav-link">Task Board</a></li>
+          <li id="adminNavLink" style="display: none;"><a href="admin.html" class="nav-link">Admin Panel</a></li>
+          <li><a href="profile.html" class="nav-link">Profile</a></li>
+          <li><button class="theme-switch" onclick="toggleTheme()">🌓</button></li>
+          <li><button class="btn btn-secondary" onclick="auth.logout()">Logout</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="panel-header" style="margin-bottom: 30px;">
+      <h1 id="welcomeUser">Welcome, Student</h1>
+      <p style="color: var(--text-secondary);">Here is your academic progress update.</p>
+    </div>
+
+    <!-- Statistics Dashboard Grid -->
+    <div class="dashboard-grid">
+      <div class="glass-card stat-card">
+        <div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">TOTAL TASKS</p>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-icon indigo">📝</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">COMPLETED</p>
+          <div class="stat-value" id="statCompleted" style="color: var(--color-success);">0</div>
+        </div>
+        <div class="stat-icon green">✅</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">PENDING</p>
+          <div class="stat-value" id="statPending" style="color: var(--color-warning);">0</div>
+        </div>
+        <div class="stat-icon orange">⏳</div>
+      </div>
+      <div class="glass-card stat-card">
+        <div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">OVERDUE</p>
+          <div class="stat-value" id="statOverdue" style="color: var(--color-danger);">0</div>
+        </div>
+        <div class="stat-icon blue">🚨</div>
+      </div>
+    </div>
+
+    <!-- Analytics Charts and Details -->
+    <div class="panels-grid">
+      <!-- Weekly Report Chart -->
+      <div class="glass-card">
+        <h3>Weekly Performance Trends</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Newly Created vs. Completed Tasks</p>
+        <div class="chart-container chart-box">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Categories Completion Rate -->
+      <div class="glass-card">
+        <h3>Academic Categories</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Tasks by Category</p>
+        <div class="chart-container chart-box">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels-grid">
+      <!-- Upcoming Deadlines -->
+      <div class="glass-card">
+        <h3>Upcoming Deadlines</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Due dates in next few days</p>
+        <div class="panel-widget" id="deadlinesList">
+          <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+            No upcoming deadlines! Good job.
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent System Alerts / Notifications -->
+      <div class="glass-card">
+        <div class="flex-between" style="margin-bottom: 15px;">
+          <h3>System Notifications</h3>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="markAllNotificationsRead()">Mark all read</button>
+        </div>
+        <div class="panel-widget" id="notificationsList">
+          <div style="text-align: center; padding: 20px; color: var(--text-muted);">
+            No notification history.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
