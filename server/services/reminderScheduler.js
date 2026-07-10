@@ -6,8 +6,60 @@ const logger = require('../utils/logger');
 
 let schedulerIntervalId = null;
 
+const checkDeadlines = async () => {
+  try {
+    const now = new Date();
+    // Find all tasks that are due, not completed, and haven't sent a deadline alert yet
+    const pendingTasks = await Task.find({
+      status: { $ne: 'completed' },
+      dueDate: { $lte: now },
+      deadlineAlertSent: { $ne: true }
+    }).populate('user');
+
+    if (pendingTasks.length === 0) return;
+
+    logger.info('SCHEDULER', `Found ${pendingTasks.length} tasks with reached deadlines to alert.`);
+
+    for (const task of pendingTasks) {
+      if (!task.user) {
+        task.deadlineAlertSent = true;
+        await task.save();
+        continue;
+      }
+
+      const taskTitle = task.title;
+      const userName = task.user.username;
+      const message = `Hello ${userName}, the deadline for your task "${taskTitle}" has been reached!`;
+
+      // 1. Create a system notification
+      await notificationService.createNotification(task.user._id, 'system', message);
+
+      // 2. Create browser notification
+      await notificationService.createNotification(task.user._id, 'browser', `Deadline Reached: "${taskTitle}"`);
+
+      // 3. Send mock email
+      await notificationService.sendMockEmail(
+        task.user.email,
+        `Deadline Reached: Task "${taskTitle}"`,
+        message
+      );
+
+      // 4. Mark as sent
+      task.deadlineAlertSent = true;
+      await task.save();
+
+      logger.info('SCHEDULER', `Sent deadline notification for Task: "${taskTitle}" to User: ${userName}`);
+    }
+  } catch (error) {
+    logger.error('SCHEDULER_ERROR', 'Error checking task deadlines in background scheduler', error);
+  }
+};
+
 const checkReminders = async () => {
   try {
+    // Also check task deadlines
+    await checkDeadlines();
+
     const now = new Date();
     // Find all reminders scheduled for now or in the past that have not been sent
     const pendingReminders = await Reminder.find({

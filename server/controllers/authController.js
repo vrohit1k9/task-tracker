@@ -344,3 +344,75 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+// @desc    Real Google Token Authentication (GIS JWT callback validation)
+// @route   POST /api/auth/google-token
+// @access  Public
+exports.googleTokenAuth = catchAsync(async (req, res, next) => {
+  const { token } = req.body;
+  if (!token) {
+    return next(new AppError('Please provide a Google ID Token', 400));
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.decode(token);
+    if (!decoded || !decoded.email) {
+      return next(new AppError('Invalid Google ID Token payload', 400));
+    }
+  } catch (err) {
+    return next(new AppError('Failed to parse Google ID Token', 400));
+  }
+
+  const { email, name, picture } = decoded;
+  const username = name || email.split('@')[0];
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({
+      username,
+      email,
+      password: Math.random().toString(36).substring(2, 15),
+      role: 'student'
+    });
+
+    // Create default category
+    await Category.create({
+      name: 'General',
+      color: '#4f46e5',
+      user: user._id
+    });
+
+    // Create default preferences
+    await UserPreference.create({
+      user: user._id,
+      theme: 'light',
+      emailNotifications: true,
+      browserNotifications: true
+    });
+  }
+
+  // Generate tokens
+  const accessToken = signAccessToken(user._id);
+  const refreshToken = signRefreshToken(user._id);
+
+  // Save refresh token
+  user.refreshTokens.push(refreshToken);
+  await user.save();
+
+  // Audit log
+  await logAudit(user._id, 'LOGIN_GOOGLE_SUCCESS', req, { email: user.email });
+
+  res.status(200).json({
+    success: true,
+    message: 'Logged in with Google successfully',
+    accessToken,
+    refreshToken,
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    }
+  });
+});

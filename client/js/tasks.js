@@ -268,6 +268,9 @@ function openTaskModal() {
   document.getElementById('taskForm').reset();
   document.getElementById('taskIdField').value = '';
   document.getElementById('taskStatusGroup').style.display = 'none';
+  if (document.getElementById('btnDeleteTaskModal')) {
+    document.getElementById('btnDeleteTaskModal').style.display = 'none';
+  }
   
   // Set default due date to tomorrow
   const tomorrow = new Date();
@@ -282,6 +285,9 @@ async function openEditTaskModal(id) {
   try {
     document.getElementById('taskModalTitle').textContent = 'Edit Task';
     document.getElementById('taskStatusGroup').style.display = 'block';
+    if (document.getElementById('btnDeleteTaskModal')) {
+      document.getElementById('btnDeleteTaskModal').style.display = 'block';
+    }
 
     const res = await api.get('/tasks');
     const task = res.data.find(t => t._id === id);
@@ -340,11 +346,16 @@ function closeReminderModal() {
 async function handleTaskFormSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('taskIdField').value;
+  
+  const localDateVal = document.getElementById('taskDueDate').value;
+  if (!localDateVal) return;
+  const isoDueDate = new Date(localDateVal).toISOString();
+
   const body = {
     title: document.getElementById('taskTitle').value,
     description: document.getElementById('taskDesc').value,
     categoryId: document.getElementById('taskCategory').value,
-    dueDate: document.getElementById('taskDueDate').value,
+    dueDate: isoDueDate,
     priority: document.getElementById('taskPriority').value
   };
 
@@ -384,15 +395,32 @@ async function handleCategoryFormSubmit(e) {
 async function handleReminderFormSubmit(e) {
   e.preventDefault();
   const taskId = document.getElementById('reminderTaskId').value;
-  const remindAt = document.getElementById('remindTime').value;
+  const localRemindVal = document.getElementById('remindTime').value;
+  if (!localRemindVal) return;
+  const isoRemindAt = new Date(localRemindVal).toISOString();
 
   try {
-    await api.post('/reminders', { taskId, remindAt });
+    await api.post('/reminders', { taskId, remindAt: isoRemindAt });
     showToast('Reminder scheduled successfully', 'success');
     closeReminderModal();
     loadReminders();
   } catch (err) {
     showToast(err.message, 'error');
+  }
+}
+
+async function handleModalDeleteTask() {
+  const id = document.getElementById('taskIdField').value;
+  if (!id) return;
+  if (confirm('Are you sure you want to delete this task?')) {
+    try {
+      await api.delete(`/tasks/${id}`);
+      showToast('Task deleted successfully', 'success');
+      closeTaskModal();
+      loadTasks();
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
   }
 }
 

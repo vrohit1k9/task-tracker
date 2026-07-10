@@ -41,6 +41,10 @@ const taskSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'User reference is required']
+  },
+  deadlineAlertSent: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
