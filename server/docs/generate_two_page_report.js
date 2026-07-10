@@ -56,13 +56,13 @@ console.log("Using screenshot 2:", img2Path);
 
 // Content data for the 24 sections
 const content = {
-  title: "TASKQUEST: STUDENT TASK TRACKER",
+  title: "SANDRO: STUDENT TASK TRACKER",
   subtitle: "Software Engineering Project Report",
   author: "Rohith V",
   course: "Gen AI",
   date: "June 26, 2026",
   
-  abstract: "The Student Task & Assignment Tracker (TaskQuest) is a comprehensive, production-grade application engineered to streamline task management, assignment organization, and course timeline scheduling for academic users. Implementing a decoupled MVC architecture, the system is built with a Vanilla HTML5/CSS3/JavaScript client and a Node.js/Express.js/MongoDB REST API. Security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, rate limiting, and input sanitization. Crucially, the quality and reliability of the application's core logic are verified through a 100% database-free integration testing harness powered by Jest and Supertest. This report outlines the system requirements, entity-relationship schemas, RESTful API endpoint details, MVC design implementation, security controls, development challenges, and testing methodologies of the completed project.",
+  abstract: "The Student Task & Assignment Tracker (Sandro) is a comprehensive, production-grade application engineered to streamline task management, assignment organization, and course timeline scheduling for academic users. Implementing a decoupled MVC architecture, the system is built with a Vanilla HTML5/CSS3/JavaScript client and a Node.js/Express.js/MongoDB REST API. Security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, rate limiting, and input sanitization. Crucially, the quality and reliability of the application's core logic are verified through a 100% database-free integration testing harness powered by Jest and Supertest. This report outlines the system requirements, entity-relationship schemas, RESTful API endpoint details, MVC design implementation, security controls, development challenges, and testing methodologies of the completed project.",
   
   introduction: "In modern academic environments, students face significant organizational challenges. Managing an extensive volume of homework, quizzes, and projects across multiple courses leads to cognitive overload. Generic task managers lack targeted academic workflows such as course color-coding, status progression flags, and role-based teacher or student namespaces.",
   
@@ -74,7 +74,7 @@ const content = {
   
   existingSystem: "Traditional systems rely on physical planners, spreadsheets, or general checklists. These methods lack automated alerts, course categorization, admin dashboard capabilities, audit log mechanisms, and cryptographic security controls.",
   
-  proposedSystem: "TaskQuest addresses these issues by offering a tailored dashboard with visual analytics (Chart.js), custom category management, cascading default tasks, automatic scheduler notification triggers, administrative namespaces, and security audits.",
+  proposedSystem: "Sandro addresses these issues by offering a tailored dashboard with visual analytics (Chart.js), custom category management, cascading default tasks, automatic scheduler notification triggers, administrative namespaces, and security audits.",
   
   functionalRequirements: "• FR-1 (User Auth): Secure register, login, logout, password change, and token refresh.\n• FR-2 (Task CRUD): Custom task operations with priority, status, and due dates.\n• FR-3 (Category CRUD): Custom courses; deleting a category cascades tasks to 'General'.\n• FR-4 (Bulk Ops): Select and batch-update status or batch-delete tasks.\n• FR-5 (Dashboard): completion rate, upcoming deadlines, charts.\n• FR-6 (Admin Panel): User audits, system stats, filter logs.\n• FR-7 (Background Scheduler): Scans deadlines & dispatches notifications.",
   
@@ -107,7 +107,7 @@ const content = {
   
   challenges: "• Jest Port Collisions: parallel execution caused port conflicts. Fixed by conditionalizing app.listen.\n• DB Dependencies: bypassed via custom in-memory Mongoose simulator.\n• Virtual Mongoose IDs: resolved by constructing virtual id getters in mocks.",
   
-  conclusion: "TaskQuest is a complete, production-ready capstone application demonstrating modular MVC separation, secure cryptographic tokens, and reliable, test-driven assurance.",
+  conclusion: "Sandro is a complete, production-ready capstone application demonstrating modular MVC separation, secure cryptographic tokens, and reliable, test-driven assurance.",
   
   futureScope: "1. Google Calendar Sync: bi-directional schedule updates.\n2. Peer Shared Boards: collaborative coursework checklists.\n3. Socket.io notifications: real-time push alerts.\n4. Attachments: upload PDFs.",
   
@@ -199,7 +199,7 @@ function generatePDF() {
 
   // Page 1 Footer
   pdfDoc.strokeColor('#e2e8f0').lineWidth(0.5).moveTo(40, 815).lineTo(555, 815).stroke();
-  pdfDoc.fillColor('#94a3b8').font('Helvetica').fontSize(7.5).text("TaskQuest: Student Task & Assignment Tracker - Project Report", 40, 822);
+  pdfDoc.fillColor('#94a3b8').font('Helvetica').fontSize(7.5).text("Sandro: Student Task & Assignment Tracker - Project Report", 40, 822);
   pdfDoc.text("Page 1 of 2", 515, 822);
 
   // --- PAGE 2 ---
@@ -278,7 +278,7 @@ function generatePDF() {
         height: 105
       });
       y += 108;
-      pdfDoc.fillColor('#64748b').font('Helvetica-Oblique').fontSize(6).text("Fig 1: TaskQuest Academic Progress Dashboard", col2X, y - 1, { align: 'center', width: colWidth });
+      pdfDoc.fillColor('#64748b').font('Helvetica-Oblique').fontSize(6).text("Fig 1: Sandro Academic Progress Dashboard", col2X, y - 1, { align: 'center', width: colWidth });
       y += 6;
       imgDrawn = true;
     } catch (err) {
@@ -292,7 +292,7 @@ function generatePDF() {
         height: 105
       });
       y += 108;
-      pdfDoc.fillColor('#64748b').font('Helvetica-Oblique').fontSize(6).text("Fig 2: TaskQuest Task Board & Assignment Management", col2X, y - 1, { align: 'center', width: colWidth });
+      pdfDoc.fillColor('#64748b').font('Helvetica-Oblique').fontSize(6).text("Fig 2: Sandro Task Board & Assignment Management", col2X, y - 1, { align: 'center', width: colWidth });
       y += 6;
       imgDrawn = true;
     } catch (err) {
@@ -319,7 +319,7 @@ function generatePDF() {
 
   // Page 2 Footer
   pdfDoc.strokeColor('#e2e8f0').lineWidth(0.5).moveTo(40, 815).lineTo(555, 815).stroke();
-  pdfDoc.fillColor('#94a3b8').font('Helvetica').fontSize(7.5).text("TaskQuest: Student Task & Assignment Tracker - Project Report", 40, 822);
+  pdfDoc.fillColor('#94a3b8').font('Helvetica').fontSize(7.5).text("Sandro: Student Task & Assignment Tracker - Project Report", 40, 822);
   pdfDoc.text("Page 2 of 2", 515, 822);
 
   pdfDoc.end();
@@ -544,7 +544,7 @@ function generateDOCX() {
         new Paragraph({
           children: [
             new TextRun({
-              text: "Fig 1: TaskQuest Academic Progress Dashboard",
+              text: "Fig 1: Sandro Academic Progress Dashboard",
               size: 11,
               italic: true,
               color: "64748B",
@@ -579,7 +579,7 @@ function generateDOCX() {
         new Paragraph({
           children: [
             new TextRun({
-              text: "Fig 2: TaskQuest Task Board & Assignment Management",
+              text: "Fig 2: Sandro Task Board & Assignment Management",
               size: 11,
               italic: true,
               color: "64748B",

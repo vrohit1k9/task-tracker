@@ -29,7 +29,7 @@ const sendSystemAlert = async (user, message) => {
   
   // If user has email option enabled, send mock email
   // (we assume default preferences are true, we can check or mock it directly)
-  await sendMockEmail(user.email, 'Student Task Tracker Alert', message);
+  await sendMockEmail(user.email, 'Sandro Alert', message);
   
   logger.info('SYSTEM_ALERT', `Sent alert to ${user.email}`);
 };

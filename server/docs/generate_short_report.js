@@ -21,7 +21,7 @@ function generateShortReport() {
   
   // Decorative Header Banner
   pdfDoc.rect(0, 0, 595.28, 120).fill('#4f46e5');
-  pdfDoc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(20).text("TASKQUEST: STUDENT TASK TRACKER", 40, 35, { align: 'center' });
+  pdfDoc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(20).text("SANDRO: STUDENT TASK TRACKER", 40, 35, { align: 'center' });
   pdfDoc.fontSize(11).font('Helvetica-Oblique').text("Project Report", 40, 65, { align: 'center' });
 
   // Metadata block
@@ -34,7 +34,7 @@ function generateShortReport() {
   // 1. Abstract
   pdfDoc.fillColor('#4f46e5').font('Helvetica-Bold').fontSize(12).text("1. Executive Summary & Abstract", 40, 175);
   pdfDoc.fillColor('#334155').font('Helvetica-Oblique').fontSize(9.5).text(
-    "TaskQuest is a production-grade, secure academic management application designed to help students organize tasks, manage courses, track deadlines, and monitor performance. Utilizing a decoupled MVC architecture, the system is built with a lightweight Vanilla HTML5/CSS3/JavaScript front-end and a robust Node.js/Express.js/MongoDB REST API backend. System security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, rate limiting, and input sanitization.",
+    "Sandro is a production-grade, secure academic management application designed to help students organize tasks, manage courses, track deadlines, and monitor performance. Utilizing a decoupled MVC architecture, the system is built with a lightweight Vanilla HTML5/CSS3/JavaScript front-end and a robust Node.js/Express.js/MongoDB REST API backend. System security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, rate limiting, and input sanitization.",
     40, 195, { align: 'justify', width: 515, lineGap: 3 }
   );
 
@@ -70,7 +70,7 @@ function generateShortReport() {
 
   // Page 1 Footer
   pdfDoc.strokeColor('#e2e8f0').lineWidth(0.5).moveTo(40, 785).lineTo(555, 785).stroke();
-  pdfDoc.fillColor('#94a3b8').fontSize(7.5).text("TaskQuest: Student Task & Assignment Tracker - Project Report", 40, 792);
+  pdfDoc.fillColor('#94a3b8').fontSize(7.5).text("Sandro: Student Task & Assignment Tracker - Project Report", 40, 792);
   pdfDoc.text("Page 1 of 2", 515, 792);
 
   // ==========================================
@@ -85,7 +85,7 @@ function generateShortReport() {
   // 4. Database Design & Schemas
   pdfDoc.fillColor('#4f46e5').font('Helvetica-Bold').fontSize(12).text("4. Database Design & Schema Architecture", 40, 65);
   pdfDoc.fillColor('#1e293b').font('Helvetica').fontSize(9.5).text(
-    "TaskQuest structures its documents across 5 main MongoDB collections:\n" +
+    "Sandro structures its documents across 5 main MongoDB collections:\n" +
     "1. Users Collection: Stores usernames, emails, hashed passwords, roles (student/admin), and lists of active refresh tokens.\n" +
     "2. Categories Collection: Custom course identifiers with hex color values and references to their owner user.\n" +
     "3. Tasks Collection: Contains due dates, priorities (low/medium/high), status tags (pending/in-progress/completed), and references to Categories and Users.\n" +
@@ -117,7 +117,7 @@ function generateShortReport() {
   // 7. Conclusion & Roadmap
   pdfDoc.fillColor('#4f46e5').font('Helvetica-Bold').fontSize(12).text("7. Conclusion & Future Roadmap", 40, 555);
   pdfDoc.fillColor('#1e293b').font('Helvetica').fontSize(9.5).text(
-    "TaskQuest is an operational, highly secure capstone application ready for production cloud environments. Future plans for expansion include:\n" +
+    "Sandro is an operational, highly secure capstone application ready for production cloud environments. Future plans for expansion include:\n" +
     "1. Live Google Calendar Synchronization: Bi-directional synchronization of task deadlines with Google Calendar API.\n" +
     "2. Shared Boards: Enabling multiple students to collaborate on shared task/project categories.\n" +
     "3. Real-Time Web Sockets: Transitioning from polling to socket.io-based instant notification push feeds.",
@@ -134,7 +134,7 @@ function generateShortReport() {
 
   // Page 2 Footer
   pdfDoc.strokeColor('#e2e8f0').lineWidth(0.5).moveTo(40, 785).lineTo(555, 785).stroke();
-  pdfDoc.fillColor('#94a3b8').fontSize(7.5).text("TaskQuest: Student Task & Assignment Tracker - Project Report", 40, 792);
+  pdfDoc.fillColor('#94a3b8').fontSize(7.5).text("Sandro: Student Task & Assignment Tracker - Project Report", 40, 792);
   pdfDoc.text("Page 2 of 2", 515, 792);
 
   pdfDoc.end();

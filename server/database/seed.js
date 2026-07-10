@@ -164,7 +164,7 @@ const seedData = async () => {
     await Notification.create({
       user: student1._id,
       type: 'system',
-      message: 'Welcome to TaskQuest! Get started by adding study tasks.',
+      message: 'Welcome to Sandro! Get started by adding study tasks.',
       read: true
     });
     await Notification.create({

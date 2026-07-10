@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "8f8e02fa-03ab-41c1-bf9a-7c9b2fbc446f",
     "name": "Student Task & Assignment Tracker",
-    "description": "REST API collection for Student Task & Assignment Tracker (TaskQuest). Includes Auth, Tasks, Categories, Reminders, Notifications, Analytics, Admin, and Audit Logs.",
+    "description": "REST API collection for Student Task & Assignment Tracker (Sandro). Includes Auth, Tasks, Categories, Reminders, Notifications, Analytics, Admin, and Audit Logs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

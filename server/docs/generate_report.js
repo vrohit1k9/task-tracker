@@ -26,25 +26,25 @@ const DOCX_PATH = path.join(__dirname, 'PROJECT_REPORT.docx');
 
 // Report contents
 const reportData = {
-  title: "TASKQUEST: STUDENT TASK & ASSIGNMENT TRACKER",
+  title: "SANDRO: STUDENT TASK & ASSIGNMENT TRACKER",
   subtitle: "Software Engineering Project Report",
   course: "Gen AI",
   author: "Rohith V",
   date: "June 26, 2026",
-  abstract: "The Student Task & Assignment Tracker (TaskQuest) is a comprehensive, production-grade application engineered to streamline task management, assignment organization, and course timeline scheduling for academic users. Utilizing a secure, decoupled Model-View-Controller (MVC) architecture, the system is built with a Vanilla HTML5/CSS3/JavaScript client front-end and a robust Node.js/Express.js/MongoDB RESTful API back-end. System security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, endpoint rate limiting, Cross-Origin Resource Sharing (CORS) constraints, Helmet HTTP security headers, and strict input sanitization to protect against XSS and MongoDB Operator injection. Crucially, the quality and reliability of the application's core logic are verified through a 100% database-free integration testing harness powered by Jest and Supertest. This report outlines the system requirements, entity-relationship schemas, RESTful API endpoint details, MVC design implementation, security controls, development challenges, and testing methodologies of the completed project.",
+  abstract: "The Student Task & Assignment Tracker (Sandro) is a comprehensive, production-grade application engineered to streamline task management, assignment organization, and course timeline scheduling for academic users. Utilizing a secure, decoupled Model-View-Controller (MVC) architecture, the system is built with a Vanilla HTML5/CSS3/JavaScript client front-end and a robust Node.js/Express.js/MongoDB RESTful API back-end. System security is enforced via cryptographic password hashing using bcrypt, JSON Web Token (JWT) access/refresh token pairs, endpoint rate limiting, Cross-Origin Resource Sharing (CORS) constraints, Helmet HTTP security headers, and strict input sanitization to protect against XSS and MongoDB Operator injection. Crucially, the quality and reliability of the application's core logic are verified through a 100% database-free integration testing harness powered by Jest and Supertest. This report outlines the system requirements, entity-relationship schemas, RESTful API endpoint details, MVC design implementation, security controls, development challenges, and testing methodologies of the completed project.",
   
   sections: [
     {
       title: "1. Introduction & Background",
       paragraphs: [
         "In modern academic environments, students face significant organizational challenges. Managing an extensive volume of homework assignments, quizzes, midterm exams, term projects, and deadlines across multiple distinct courses can lead to cognitive overload and missed milestones. Generic, consumer-level task managers often lack targeted academic workflows (such as color-coded subject categories, specific status progression flags, automatic deadline reminders, and user activity history audits). Furthermore, existing solutions are frequently closed-source, require costly subscriptions, or fail to prioritize student data security, leaving credentials and records vulnerable to compromise.",
-        "The Student Task & Assignment Tracker (TaskQuest) is designed to solve these issues. It provides an elegant, responsive, and secure digital dashboard where students can structure their coursework, filter activities, track upcoming deadlines, and visualize progress. Concurrently, it offers an administrator namespace allowing teachers or system managers to perform user audits, inspect system statistics, and review audit streams to maintain system health."
+        "The Student Task & Assignment Tracker (Sandro) is designed to solve these issues. It provides an elegant, responsive, and secure digital dashboard where students can structure their coursework, filter activities, track upcoming deadlines, and visualize progress. Concurrently, it offers an administrator namespace allowing teachers or system managers to perform user audits, inspect system statistics, and review audit streams to maintain system health."
       ]
     },
     {
       title: "2. Project Objectives & Scope",
       paragraphs: [
-        "The primary objectives of the TaskQuest project include:",
+        "The primary objectives of the Sandro project include:",
         "1. Centralization: Establish a unified, intuitive interface where users can easily register, classify, and track tasks by course subject and deadline.",
         "2. Automated Deadlines: Build a background scheduling daemon that regularly scans database records and triggers alerts for tasks that are approaching their due dates.",
         "3. Role-Based Access Control: Define separate security namespaces for standard 'student' users and 'admin' accounts using JWT validation to protect administrative routes.",
@@ -57,7 +57,7 @@ const reportData = {
       title: "3. Existing vs. Proposed System Analysis",
       paragraphs: [
         "Existing System Analysis: Traditional student organization relies on physical planners, basic spreadsheet templates, or commercial generalized task managers. These methods exhibit several critical drawbacks: they lack automated deadline scanning, do not provide course-specific color coding out of the box, do not offer system auditing, and suffer from poor data security. Collaborative workflows and admin controls are also absent, making global management by an educational institution impossible.",
-        "Proposed System Analysis: TaskQuest addresses these limitations by introducing a customized academic tracking system. It integrates security protections (bcrypt hashing, JWT tokens, sanitizers) with a responsive dashboard that uses Chart.js to render weekly task trends and category weights. An automated scheduling daemon processes pending task due dates to dispatch mock emails and system alerts. Administrators gain full visibility over user profiles and system audit logs, ensuring transparency and safety."
+        "Proposed System Analysis: Sandro addresses these limitations by introducing a customized academic tracking system. It integrates security protections (bcrypt hashing, JWT tokens, sanitizers) with a responsive dashboard that uses Chart.js to render weekly task trends and category weights. An automated scheduling daemon processes pending task due dates to dispatch mock emails and system alerts. Administrators gain full visibility over user profiles and system audit logs, ensuring transparency and safety."
       ]
     },
     {
@@ -133,7 +133,7 @@ const reportData = {
     {
       title: "10. Conclusion & Future Enhancements",
       paragraphs: [
-        "Conclusion: The TaskQuest Student Task & Assignment Tracker is a complete, production-ready capstone project. By adhering to strict MVC patterns, modular SOLID design, and robust security headers, the project is ready for local execution and containerized cloud deployment.",
+        "Conclusion: The Sandro Student Task & Assignment Tracker is a complete, production-ready capstone project. By adhering to strict MVC patterns, modular SOLID design, and robust security headers, the project is ready for local execution and containerized cloud deployment.",
         "Future Enhancements: The architecture allows for easy expansion. Future roadmap additions include: 1) Google Calendar API integration to sync deadlines; 2) Collaborative boards to support group task assignments; 3) Socket.io real-time push alerts; and 4) PDF/Image attachment upload support for assignments."
       ]
     }
@@ -246,7 +246,7 @@ function generatePDF() {
     if (i > 0) {
       // Header
       pdfDoc.fillColor('#94a3b8').font('Helvetica').fontSize(8)
-        .text("TaskQuest: Student Task & Assignment Tracker - Capstone Project Report", 50, 25, { align: 'left' });
+        .text("Sandro: Student Task & Assignment Tracker - Capstone Project Report", 50, 25, { align: 'left' });
       pdfDoc.strokeColor('#cbd5e1').lineWidth(0.5).moveTo(50, 35).lineTo(545, 35).stroke();
 
       // Footer
@@ -488,7 +488,7 @@ function generateDOCX() {
               new Paragraph({
                 children: [
                   new TextRun({
-                    text: "TaskQuest: Student Task & Assignment Tracker - Project Report",
+                    text: "Sandro: Student Task & Assignment Tracker - Project Report",
                     size: 16,
                     color: "94A3B8",
                     font: "Arial"
