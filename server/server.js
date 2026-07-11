@@ -81,13 +81,15 @@ app.get('*', (req, res, next) => {
 // Centralized error handler
 app.use(errorHandler);
 
+let server;
+
 // Only start server and scheduler if not in testing environment
 if (process.env.NODE_ENV !== 'test') {
   // Start reminder Scheduler (checks reminders every 30 seconds)
   reminderScheduler.startScheduler(30000);
 
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     logger.app(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
 }
@@ -96,7 +98,11 @@ if (process.env.NODE_ENV !== 'test') {
 process.on('unhandledRejection', (err, promise) => {
   logger.error('CRITICAL_REJECTION', `Unhandled Rejection: ${err.message}`, err);
   // Close server & exit process
-  server.close(() => process.exit(1));
+  if (server) {
+    server.close(() => process.exit(1));
+  } else {
+    process.exit(1);
+  }
 });
 
 module.exports = app; // export for testing
