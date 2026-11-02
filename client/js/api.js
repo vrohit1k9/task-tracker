@@ -69,16 +69,7 @@ const api = {
       }
     }
 
-    let data;
-    const responseText = await response.text();
-    try {
-      data = responseText ? JSON.parse(responseText) : {};
-    } catch (e) {
-      if (!response.ok) {
-        throw new Error(`Server returned error ${response.status}. The server may be waking up or redeploying, please wait a moment.`);
-      }
-      throw new Error('Invalid response received from server.');
-    }
+    const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.message || 'Something went wrong');
